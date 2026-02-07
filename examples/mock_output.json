@@ -1,0 +1,225 @@
+{
+  "dataset": {
+    "name": "demo-data",
+    "namespace": "fluid-system",
+    "phase": "Bound",
+    "ufsTotal": "100Gi",
+    "cached": "25Gi",
+    "cachedPercentage": "50%",
+    "conditions": [
+      {
+        "type": "Ready",
+        "status": "True",
+        "reason": "DatasetReady",
+        "message": "Dataset is ready"
+      }
+    ],
+    "mountPoints": ["s3://example-bucket/data"]
+  },
+  "runtime": {
+    "name": "demo-data",
+    "namespace": "fluid-system",
+    "type": "alluxio",
+    "masterPhase": "Ready",
+    "workerPhase": "Ready",
+    "fusePhase": "Ready",
+    "masterReady": "1/1",
+    "workerReady": "2/2",
+    "fuseReady": "3/3"
+  },
+  "resources": [
+    {
+      "kind": "StatefulSet",
+      "apiVersion": "apps/v1",
+      "name": "demo-data-master",
+      "namespace": "fluid-system",
+      "component": "master",
+      "status": {
+        "phase": "Ready",
+        "ready": "1/1",
+        "age": "24h"
+      },
+      "owner": {
+        "kind": "AlluxioRuntime",
+        "name": "demo-data"
+      },
+      "labels": {
+        "release": "demo-data",
+        "app": "alluxio",
+        "role": "alluxio-master"
+      },
+      "children": [
+        {
+          "kind": "Pod",
+          "name": "demo-data-master-0",
+          "namespace": "fluid-system",
+          "component": "master",
+          "status": {
+            "phase": "Running",
+            "message": "Running",
+            "age": "1h"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "StatefulSet",
+      "apiVersion": "apps/v1",
+      "name": "demo-data-worker",
+      "namespace": "fluid-system",
+      "component": "worker",
+      "status": {
+        "phase": "Ready",
+        "ready": "2/2",
+        "age": "24h"
+      },
+      "owner": {
+        "kind": "AlluxioRuntime",
+        "name": "demo-data"
+      },
+      "labels": {
+        "release": "demo-data",
+        "app": "alluxio",
+        "role": "alluxio-worker"
+      },
+      "children": [
+        {
+          "kind": "Pod",
+          "name": "demo-data-worker-0",
+          "namespace": "fluid-system",
+          "component": "worker",
+          "status": {
+            "phase": "Running",
+            "message": "Running",
+            "age": "1h"
+          }
+        },
+        {
+          "kind": "Pod",
+          "name": "demo-data-worker-1",
+          "namespace": "fluid-system",
+          "component": "worker",
+          "status": {
+            "phase": "Running",
+            "message": "Running",
+            "age": "1h"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "DaemonSet",
+      "apiVersion": "apps/v1",
+      "name": "demo-data-fuse",
+      "namespace": "fluid-system",
+      "component": "fuse",
+      "status": {
+        "phase": "Ready",
+        "ready": "3/3",
+        "age": "24h"
+      },
+      "owner": {
+        "kind": "AlluxioRuntime",
+        "name": "demo-data"
+      },
+      "labels": {
+        "release": "demo-data",
+        "app": "alluxio",
+        "role": "alluxio-fuse"
+      }
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "apiVersion": "v1",
+      "name": "demo-data",
+      "namespace": "fluid-system",
+      "component": "storage",
+      "status": {
+        "phase": "Bound",
+        "age": "24h"
+      },
+      "details": {
+        "volumeName": "demo-data-pv"
+      }
+    },
+    {
+      "kind": "PersistentVolume",
+      "apiVersion": "v1",
+      "name": "demo-data-pv",
+      "component": "storage",
+      "status": {
+        "phase": "Bound",
+        "age": "24h"
+      },
+      "owner": {
+        "kind": "PersistentVolumeClaim",
+        "name": "demo-data"
+      }
+    },
+    {
+      "kind": "ConfigMap",
+      "apiVersion": "v1",
+      "name": "demo-data-config",
+      "namespace": "fluid-system",
+      "component": "config",
+      "status": {
+        "phase": "Ready",
+        "age": "24h"
+      },
+      "details": {
+        "keys": "3"
+      }
+    },
+    {
+      "kind": "ConfigMap",
+      "apiVersion": "v1",
+      "name": "demo-data-master-config",
+      "namespace": "fluid-system",
+      "component": "config",
+      "status": {
+        "phase": "Ready",
+        "age": "24h"
+      },
+      "details": {
+        "keys": "1"
+      }
+    },
+    {
+      "kind": "ConfigMap",
+      "apiVersion": "v1",
+      "name": "demo-data-worker-config",
+      "namespace": "fluid-system",
+      "component": "config",
+      "status": {
+        "phase": "Ready",
+        "age": "24h"
+      },
+      "details": {
+        "keys": "1"
+      }
+    },
+    {
+      "kind": "Secret",
+      "apiVersion": "v1",
+      "name": "demo-data-secret",
+      "namespace": "fluid-system",
+      "component": "config",
+      "status": {
+        "phase": "Ready",
+        "age": "24h"
+      },
+      "details": {
+        "type": "Opaque",
+        "keys": "2"
+      }
+    }
+  ],
+  "warnings": [],
+  "metadata": {
+    "mappedAt": "2026-02-08T10:30:00Z",
+    "duration": "45ms",
+    "clusterName": "mock-cluster",
+    "version": "1.0.0",
+    "mockMode": true
+  }
+}
